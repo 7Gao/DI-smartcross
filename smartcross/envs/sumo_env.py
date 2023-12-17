@@ -19,6 +19,23 @@ from smartcross.envs.reward import SumoRewardRunner
 from smartcross.utils.config_utils import get_sumocfg_inputs
 
 
+def md2d(md_action):
+    res = 0
+    for i in md_action:
+        res *= 4
+        res += i
+    return res
+
+
+def d2md(d_action):
+    res = []
+    tmp = d_action
+    for _ in range(4):
+        res.append(tmp % 4)
+        tmp = tmp // 4
+    res.reverse()
+    return res
+
 @ENV_REGISTRY.register('sumo_env')
 class SumoEnv(BaseEnv):
 
@@ -103,6 +120,7 @@ class SumoEnv(BaseEnv):
         self._sumo_inputs['route-files'] = rf_new
         print("reset sumocfg file to ", route_flow)
 
+
     def reset(self) -> Any:
         self._current_steps = 0
         self._total_reward = 0
@@ -124,6 +142,8 @@ class SumoEnv(BaseEnv):
         return self._obs_runner.get()
 
     def step(self, action: Any) -> 'BaseEnv.timestep':
+        if self._from_discrete:
+            action = np.array(d2md(action))
         action_per_tl = self._action_runner.get(action)
         self._simulate(action_per_tl)
         for cross in self._crosses.values():
@@ -134,7 +154,7 @@ class SumoEnv(BaseEnv):
         done = self._current_steps > self._max_episode_steps
         info = {}
         if done:
-            info['final_eval_reward'] = self._total_reward
+            info['eval_episode_return'] = self._total_reward
             self.close()
         reward = to_ndarray([reward], dtype=np.float32)
         return BaseEnvTimestep(obs, reward, done, info)

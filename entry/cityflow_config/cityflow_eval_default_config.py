@@ -8,6 +8,7 @@ cityflow_eval_default_config = dict(
             context='spawn',
             retry_type='renew',
         ),
+        from_discrete=False,
         obs_type=['phase'],
         n_evaluator_episode=1,
         max_episode_duration=1000,
@@ -17,6 +18,7 @@ cityflow_eval_default_config = dict(
         stop_value=0,
         collector_env_num=1,
         evaluator_env_num=1,
+        muzero=False,
     ),
     policy=dict(cuda=False, )
 )

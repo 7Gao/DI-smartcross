@@ -54,7 +54,7 @@ def main(args, seed=None):
         policy,
     )
     _, eval_reward = evaluator.eval(None, -1, -1, cfg.env.n_evaluator_episode)
-    eval_reward = [r['final_eval_reward'].item() for r in eval_reward]
+    eval_reward = eval_reward['eval_episode_return']
     print('Eval is over! The performance is {}'.format(eval_reward))
     evaluator.close()
     return eval_reward

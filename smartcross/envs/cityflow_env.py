@@ -53,6 +53,7 @@ class CityflowEnv(BaseEnv):
         self._no_actions = not file_config['rlTrafficLight']
 
         roadnet_file = os.path.join(file_config['dir'], file_config['roadnetFile'])
+        roadnet_file = os.path.join('/home/qi/Workspace/github/DI-smartcross', roadnet_file)
         with open(roadnet_file, 'r') as fr:
             roadnet_config = json.load(fr)
 
@@ -141,6 +142,9 @@ class CityflowEnv(BaseEnv):
                     if k[:-2] in roads:
                         vehicle_nums.append(v)
                 obs[cross] += vehicle_nums
+        obs = to_ndarray(squeeze_obs(obs), dtype=np.float32)
+        if self._cfg.muzero:
+            obs = {'observation': obs, 'action_mask': np.ones(24, 'int8'), 'to_play': -1}
         return obs
 
     def _get_reward(self):
@@ -211,7 +215,7 @@ class CityflowEnv(BaseEnv):
                 self._eng.set_tl_phase(cross, phase)
             self._current_phases[cross] = 0
         obs = self._get_obs()
-        return to_ndarray(squeeze_obs(obs), dtype=np.float32)
+        return obs
 
     def step(self, action: Any) -> 'BaseEnvTimestep':
         action = np.squeeze(action)
@@ -219,14 +223,14 @@ class CityflowEnv(BaseEnv):
             action = np.array(d2md(action))
         self._simulate(action)
         obs = self._get_obs()
-        obs = to_ndarray(squeeze_obs(obs), dtype=np.float32)
+        obs = obs
         reward = self._get_reward()
         reward = to_ndarray(sum(reward.values()), dtype=np.float32)
         self._total_reward += reward
         done = self._total_duration > self._max_episode_duration
         info = {}
         if done:
-            info['final_eval_reward'] = self._total_reward
+            info['eval_episode_return'] = self._total_reward
             self.close()
         return BaseEnvTimestep(obs, reward, done, info)
 

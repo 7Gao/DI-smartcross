@@ -71,7 +71,7 @@ class FixedPolicy():
             action = self._last_act[i] + 1
             action[action >= self._nvec] = 0
         self._last_act[i] = action
-        action = [torch.LongTensor([v]) for v in action]
+        action = [torch.LongTensor([v.astype(int)]) for v in action]
         return action
 
     def forward(self, data: Dict) -> Dict[int, Dict]:

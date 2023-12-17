@@ -1,12 +1,12 @@
 {
-	"interval": 1.0,
-	"seed": 0,
-	"dir": "smartcross/envs/cityflow_grid/",
-	"roadnetFile": "roadnet_2_3.json", 
-	"flowFile": "flow_2_3.json", 
-	"rlTrafficLight": false,
-	"saveReplay": true,
-	"roadnetLogFile": "replay_auto_roadnet.json", 
-	"replayLogFile": "replay_auto.txt",
-	"laneChange": true
+  "interval": 1.0,
+  "seed": 0,
+  "dir": "/home/qi/Workspace/github/DI-smartcross/smartcross/envs/cityflow_grid/",
+  "roadnetFile": "roadnet_2_3.json", 
+  "flowFile": "flow_2_3.json", 
+  "rlTrafficLight": false,
+  "saveReplay": true,
+  "roadnetLogFile": "replay_auto_roadnet.json", 
+  "replayLogFile": "replay_auto.txt",
+  "laneChange": true
 }

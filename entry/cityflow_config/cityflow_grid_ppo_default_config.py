@@ -9,6 +9,7 @@ cityflow_mdppo_default_config = dict(
             retry_type='renew',
             max_retry=5,
         ),
+        from_discrete=False,
         obs_type=['phase', 'lane_vehicle_num', 'lane_waiting_vehicle_num'],
         max_episode_duration=1000,
         green_duration=30,
